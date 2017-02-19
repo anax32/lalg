@@ -4,27 +4,25 @@
 #include <array>
 #include <functional>
 
-namespace lalg
+typedef long unsigned int	dim;
+typedef double			type;
+
+template <dim N>
+using vec = std::array<type, N>;
+
+template <dim N, dim M>
+using mat = std::array<vec<M>, N>;
+
+/* generator functions */
+type zero()											{return 0.0;}
+type one()											{return 1.0;}
+type rando()										{return ((type)rand() / (type)RAND_MAX);}
+type sigmoid(type x)								{return 1.0 / (1.0 + exp(-x));}
+type sigmoid_derivative(type x)						{return x * (1.0 - x);}
+
+template<dim N>					void _fill(vec<N>& a, type x)
 {
-	typedef long unsigned int	dim;
-	typedef double			type;
-
-	template <dim N>
-	using vec = std::array<type, N>;
-
-	template <dim N, dim M>
-	using mat = std::array<vec<M>, N>;
-
-	/* generator functions */
-	type zero()											{return 0.0;}
-	type one()											{return 1.0;}
-	type rando()										{return ((type)rand() / (type)RAND_MAX);}
-	type sigmoid(type x)								{return 1.0 / (1.0 + exp(-x));}
-	type sigmoid_derivative(type x)						{return x * (1.0 - x);}
-
-template<dim N>					void fill(vec<N>& a, type x)
-{
-//	for (auto i=0; i<a.size (); i++)
+//	for (auto i=0; i<a.size (); i++)	
 	for (auto i : a)
 	{
 		//a[i] = x;
@@ -400,7 +398,7 @@ template<dim N>					void _gaussian_elimination(const mat<N,N>& A, mat<N,N>& inve
 	auto diags = vec<N>();							// diagonal vector
 	auto c = zero();								// coefficent for column zeroing
 
-	_copy(A, C);
+	C = A;//_copy(A, C);
 	determinant = one();							// determinant (sign is important)
 
 	// put the matrix in row echelon form
@@ -470,14 +468,14 @@ template<dim N>					void _gaussian_elimination(const mat<N,N>& A, mat<N,N>& inve
 	}
 
 	// return the inverse
-	_copy(I, inverse);
+	inverse = I;
 }
 /* Wrapper to compute the determinant of a matrix using the gaussian elimination method */
 template<dim N>					type _determinant_gaussian_elimination(const mat<N,N>& A)
 {
 	type sum = 1.0;
 	auto I = mat<N,N>();
-	_copy(A, I);
+	I = A;
 	_gaussian_elimination(A, I, sum);
 	return sum;
 }
@@ -1168,4 +1166,3 @@ template<dim N, dim M>				void _least_squares_regression(const mat<N,M>& design_
 	_pseudo_inverse(design_matrix, ps_inv);
 	_mult(ps_inv, observations, O);
 }
-};

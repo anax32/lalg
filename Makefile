@@ -2,24 +2,21 @@ MKDIR = mkdir -p
 FLAGS = -std=c++11
 BIN_DIR = bin/
 TEST_DIR = test/
-TEST_BIN_DIR = test/bin/
+TEST_BIN_DIR = bin/test/
 
 $(BIN_DIR):
 	 $(MKDIR) $(BIN_DIR)
 
-$(TEST_DIR):
-	$(MKDIR) $(TEST_DIR)
-
-$(TEST_BIN_DIR): $(TEST_DIR)
+$(TEST_BIN_DIR): $(BIN_DIR)
 	$(MKDIR) $(TEST_BIN_DIR)
 
-tests: $(TEST_DIR)tests.cpp mats.h $(TEST_DIR)
+tests: $(TEST_DIR)tests.cpp mats.h $(TEST_BIN_DIR)
 	g++ $(FLAGS) -o $(TEST_BIN_DIR)$@ $(TEST_DIR)tests.cpp
 
-tests_ann: $(TEST_DIR)tests_ann.cpp mats.h $(TEST_DIR)
+tests_ann: $(TEST_DIR)tests_ann.cpp mats.h $(TEST_BIN_DIR)
 	g++ $(FLAGS) -o $(TEST_BIN_DIR)$@ $(TEST_DIR)tests_ann.cpp
 
-tests_regress: $(TEST_DIR)tests_regress.cpp mats.h $(TEST_DIR)
+tests_regress: $(TEST_DIR)tests_regress.cpp mats.h $(TEST_BIN_DIR)
 	g++ $(FLAGS) -o $(TEST_BIN_DIR)/$@ $(TEST_DIR)tests_regress.cpp
 
 tests_all: tests tests_ann tests_regress

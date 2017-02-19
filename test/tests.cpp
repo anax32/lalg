@@ -5,7 +5,7 @@
 
 #define BIT_32		1
 
-#include "mats.h"
+#include "../mats.h"
 #include "tests.h"
 
 void vector_make_test()
@@ -754,7 +754,7 @@ void matrix_many_transpose_test()
 	{
 		_transpose(A, B);
 		assert_is_true(is_transpose(A, B));
-		_copy(B, A);
+		A = B;//_copy(B, A);
 	}
 }
 void matrix_many_add_test()
@@ -1193,7 +1193,7 @@ void neural_network_2_layer_test()
 	// adaptation loop
 	for (i = 0; i<10000; i++)
 	{
-		_copy(X, layer0);
+		layer0 = X;//_copy(X, layer0);
 		_mult(layer0, S0, layer0_S0);
 		_map(layer0_S0, sigmoid, layer1);
 		_sub(Y, layer1, layer1_error);
@@ -1257,7 +1257,7 @@ void neural_network_3_layer_test()
 	// adaptation loop
 	for (i = 0; i<10000; i++)
 	{
-		_copy(X, layer0);
+		layer0 = X;//_copy(X, layer0);
 
 		_mult(layer0, S0, layer0_S0);
 		_mult(layer1, S1, layer1_S1);
