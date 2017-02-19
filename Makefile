@@ -1,16 +1,24 @@
-FLAGS=-std=c++11
+MKDIR = mkdir -p
+FLAGS = -std=c++11
+BIN_DIR = bin
+TEST_DIR = test
 
-tests: tests.cpp mats.h
-	g++ -std=c++11 -o tests tests.cpp
+$(BIN_DIR):
+	 $(MKDIR) $(BIN_DIR)
 
-tests_ann: tests_ann.cpp mats.h
-	g++ -g -o tests_ann tests_ann.cpp
+$(TEST_DIR):
+	$(MKDIR) $(TEST_DIR)
 
-tests_regress: tests_regress.cpp mats.h
-	g++ -o tests_regress tests_regress.cpp
+tests: tests.cpp mats.h $(TEST_DIR)
+	g++ $(FLAGS) -o $(TEST_DIR)/$@ tests.cpp
+
+tests_ann: tests_ann.cpp mats.h $(TEST_DIR)
+	g++ $(FLAGS) -o $(TEST_DIR)/$@ tests_ann.cpp
+
+tests_regress: tests_regress.cpp mats.h $(TEST_DIR)
+	g++ $(FLAGS) -o $(TEST_DIR)/$@ tests_regress.cpp
 
 tests_all: tests tests_ann tests_regress
 
-
 clean:
-	rm *.o tests tests_ann tests_regress
+	rm -drf $(BIN_DIR) $(TEST_DIR)
