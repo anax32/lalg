@@ -4,6 +4,8 @@
 #include <array>
 #include <functional>
 
+#undef minor
+
 typedef long unsigned int	dim;
 typedef double			type;
 
@@ -20,187 +22,178 @@ type rando()										{return ((type)rand() / (type)RAND_MAX);}
 type sigmoid(type x)								{return 1.0 / (1.0 + exp(-x));}
 type sigmoid_derivative(type x)						{return x * (1.0 - x);}
 
-template<dim N>					void _fill(vec<N>& a, type x)
+template<dim N>					void fill(vec<N>& a, type x)
 {
-//	for (auto i=0; i<a.size (); i++)	
-	for (auto i : a)
+	for (auto& i : a)
 	{
-		//a[i] = x;
 		i = x;
 	}
 }
-template<dim N, dim M>			void _fill(mat<N,M>& A, type x)
+template<dim N, dim M>			void fill(mat<N,M>& A, type x)
 {
-	dim i;
-	for (i = 0; i<A.size (); i++)
+	for (auto& v : A)
 	{
-		_fill(A[i], x);
+		fill (v, x);
 	}
 }
 
 /* Apply a function to all values in the vector */
-template<dim N>					void _map(const vec<N>& a, std::function<type()> fn, vec<N>& o)
+template<dim N>					void map(const vec<N>& a, std::function<type()> fn, vec<N>& o)
 {
-	dim i;
-
-	for (i=0; i<a.size(); i++)
+	for (auto& i : o)
 	{
-		o[i] = fn();
+		i = fn();
 	}
 }
-template<dim N>					void _map(const vec<N>& a, std::function<type(type)> fn, vec<N>& o)
+template<dim N>					void map(const vec<N>& a, std::function<type(type)> fn, vec<N>& o)
 {
-	dim i;
-
-	for (i=0; i<a.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		o[i] = fn(a[i]);
+		o[i] = fn (a[i]);
 	}
 }
 /* Apply a function f to all values in the matrix */
-template<dim N, dim M>			void _map(const mat<N,M>& A, std::function<type()> fn, mat<N,M>& O)
+template<dim N, dim M>			void map(const mat<N,M>& A, std::function<type()> fn, mat<N,M>& O)
 {
-	dim i;
-	for (i=0; i<A.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		_map (A[i], fn, O[i]);
+		map (A[i], fn, O[i]);
 	}
 }
 
 /* Apply a function f to all values in the matrix */
-template<dim N, dim M>			void _map(const mat<N,M>& A, std::function<type(type)> fn, mat<N,M>& O)
+template<dim N, dim M>			void map(const mat<N,M>& A, std::function<type(type)> fn, mat<N,M>& O)
 {
-	dim i;
-	for (i=0; i<A.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		_map (A[i], fn, O[i]);
+		map (A[i], fn, O[i]);
 	}
 }
 
 /* fills a matrix like A with zeros */
-template<dim N>					void _zeros(vec<N>& a)								{_map(a, zero, a);}
-template<dim N, dim M>			void _zeros(mat<N,M>& A)							{_map(A, zero, A);}
+template<dim N>					void zeros(vec<N>& a)								{map(a, zero, a);}
+template<dim N, dim M>			void zeros(mat<N,M>& A)								{map(A, zero, A);}
 /* fills a vector like a with unit values */
-template<dim N>					void _ones(vec<N>& a)								{_map(a, one, a);}
+template<dim N>					void ones(vec<N>& a)								{map(a, one, a);}
 /* fills a matrix like A with unit values */
-template<dim N, dim M>			void _ones(mat<N,M>& A)								{_map(A, one, A);}
+template<dim N, dim M>			void ones(mat<N,M>& A)								{map(A, one, A);}
 /* fills a matrix like A with random numbers (0..1] */
 //mat random(mat A)								{ return map(A, rando); }
 /* Returns a square identity matrix of given size */
-template<dim N>					void _identity(mat<N,N>& A)
+template<dim N>					void identity(mat<N,N>& A)
 {
-	dim i;
-	_zeros(A);
+	zeros(A);
 
-	for (i=0; i<A.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
 		A[i][i] = 1.0;
 	}
 }
 /* implementation of matlab command: "A = gallery('lehmer', size) */
-template<dim N, dim M>			void _lehmer(mat<N,M>& A)
+template<dim N, dim M>			void lehmer(mat<N,M>& A)
 {
-	dim i, j;
-
-	for (i=0; i<A.size (); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		for (j=0; j<A[0].size(); j++)
+		for (auto j=0u; j<M; j++)
 		{
-			A[i][j] = std::min((type)(i + 1), (type)(j + 1)) / std::max((type)(i + 1), (type)(j + 1));
+			A[i][j] = (type)std::min(i+1, j+1) / (type)std::max(i+1, j+1);
 		}
 	}
 }
 /* returns a hilbert matrix. */
-template<dim N, dim M>			void _hilbert(mat<N,M>& A)
+template<dim N, dim M>			void hilbert(mat<N,M>& A)
 {
-	dim i, j;
-	for (i=0; i<A.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		for (j=0; j<A[0].size(); i++)
+		for (auto j=0u; j<M; j++)
 		{
 			A[i][j] = 1.0/(type)(i+j-1);
 		}
 	}
 }
 /* return a counted matrix */
-template<dim N>					void _counter(vec<N>& a)
+template<dim N>					void counter(vec<N>& a)
 {
-	dim i;
-
-	for (i = 0; i < a.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		a[i] = (type)i + 1;
+		a[i] = (type)i+1;
 	}
 }
-template<dim N, dim M>			void _counter(mat<N,M>& A)
+template<dim N, dim M>			void counter(mat<N,M>& A)
 {
-	dim i, j;
-
-	for (i=0; i<A.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		for (j=0; j<A[0].size(); j++)
+		for (auto j=0u; j<M; j++)
 		{
-			A[i][j] = (i*A.size())+j;
+			A[i][j] = (i*N)+j;
 		}
 	}
 }
 
 /* Element-wise negation of a vector a (i.e., a = -a) */
-template<dim N>					void _negate(const vec<N>& a, vec<N>& o)
-{
-	for (auto i=0; i<a.size(); i++)
-	{
-		o[i] = -a[i];
-	}
-}
 template<dim N>					void negate (vec<N>& a)
 {
-	for (auto i : a)
+	for (auto& i : a)
 	{
-		a = -a;
+		i = -i;
 	}
+}
+template<dim N>					void negate(const vec<N>& a, vec<N>& o)
+{
+	o = a;
+	negate (o);
 }
 /* Element-wise negation of a matrix A */
-template<dim N, dim M>			void _negate(const mat<N,M>& A, mat<N,M>& O)
-{
-	for (auto i=0; i<N; i++)
-	{
-		_negate(A[i], O[i]);
-	}
-}
 template<dim N, dim M>			void negate(mat<N,M>& A)
 {
-	for (auto v : A)
+	for (auto& v : A)
 	{
 		negate (v);
 	}
 }
-/* Transposes a matrix */
-template<dim N, dim M>			void _transpose(const mat<N,M>& A, mat<M,N>& O)
+template<dim N, dim M>			void negate(const mat<N,M>& A, mat<N,M>& O)
 {
-	for (auto i=0; i<M; i++)
+	O = A;
+	negate (O);
+}
+/* Transposes a matrix */
+template<dim N, dim M>			void transpose(const mat<N,M>& A, mat<M,N>& O)
+{
+	for (auto i=0u; i<M; i++)
 	{
-		for (auto j=0; j<N; j++)
+		for (auto j=0u; j<N; j++)
 		{
 			O[i][j] = A[j][i];
 		}
 	}
 }
-template<dim N>					void _scale(const vec<N>& a, type scalar, vec<N>& o)
+template<dim N>					void scale(vec<N>& a, const type scalar)
 {
-	for (auto i=0; i<N; i++)
+	for (auto& i : a)
 	{
-		o[i] = a[i]*scalar;
+		i*=scalar;
+	}
+}
+template<dim N>					void scale(const vec<N>& a, const type scalar, vec<N>& o)
+{
+	o = a;
+	scale (o, scalar);
+}
+template<dim N, dim M>			void scale(const mat<N,M>& A, const type scalar, mat<N,M>& O)
+{
+	for (auto i=0u; i<N; i++)
+	{
+		scale (A[i], scalar, O[i]);
 	}
 }
 /* Element-wise sum of a vector */
 /* FIXME: if len(a) > X split the vector and sum in parallel
    to avoid rounding errors */
-template<dim N>					type _sum(const vec<N>& a)
+template<dim N>					type sum(const vec<N>& a)
 {
 	auto c = zero();
 
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
 		c += a[i];
 	}
@@ -208,14 +201,13 @@ template<dim N>					type _sum(const vec<N>& a)
 }
 
 /* Element-wise sum of a matrix */
-template<dim N, dim M>			type _sum(const mat<N,M>& A)
+template<dim N, dim M>			type sum(const mat<N,M>& A)
 {
-	dim i;
 	type c = zero();
 
-	for (auto i=0; i<M; i++)
+	for (auto v : A)
 	{
-		c += _sum (A[i]);
+		c += sum (v);
 	}
 
 	return c;
@@ -232,117 +224,113 @@ template<dim N>					type product_sum(const vec<N>& a)
 
 	return c;
 }
-template<dim N>					void _add(const vec<N>& a, const vec<N>& b, vec<N>& o)
+template<dim N>					void add(const vec<N>& a, const vec<N>& b, vec<N>& o)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		o[i] = a[i] + b[i];
+		o[i]=a[i]+b[i];
 	}
 }
-template<dim N, dim M>			void _add(const mat<N,M>& A, const mat<N,M>& B, mat<N,M>& O)
+template<dim N, dim M>			void add(const mat<N,M>& A, const mat<N,M>& B, mat<N,M>& O)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		_add(A[i], B[i], O[i]);
+		add (A[i], B[i], O[i]);
 	}
 }
 /* Multiply then add operator. (a*scalar)+b */
-template<dim N>					void _mad(vec<N>& o, const vec<N>& a, const vec<N>& b, const type scalar)
+template<dim N>					void mad(const vec<N>& a, const type scalar, const vec<N>& b, vec<N>& o)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		o[i] = (a[i]*scalar)+b[i];
-	}
-}
-template<dim N, dim M>			void _scale(const mat<N,M>& A, const type scalar, mat<N,M>& O)
-{
-	for (auto i=0; i<N; i++)
-	{
-		_scale(A[i], scalar, O[i]);
+		o[i]=(a[i]*scalar)+b[i];
 	}
 }
 /* multiply two given vectors */
-template<dim N>					void _mult(const vec<N>& a, const vec<N>& b, vec<N>& o)
+template<dim N>					void mult(const vec<N>& a, const vec<N>& b, vec<N>& o)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
 		o[i]=a[i]*b[i];
 	}
 }
-template<dim N>					type _dot(const vec<N>& a, const vec<N>& b)
+template<dim N>					vec<N> mult (const vec<N>& a, const vec<N>& b)
 {
-	type d = zero();
-	for (auto i=0; i<N; i++)
-	{
-		d+=a[i]*b[i];
-	}
-	return d;
+	auto o = vec<N>();
+	mult (a, b, o);
+	return o;
 }
-template<dim N>					type inner(const vec<N>& a, const vec<N>& b)						{ return _dot(a, b); }
-/* multiply a matrix by a vector */
-template<dim N, dim M>			void _mult(const mat<N,M>& A, const vec<M>& a, vec<M>& o)
+template<dim N>					type dot (const vec<N>& a, const vec<N>& b)
 {
-	for (auto i=0; i<N; i++)
+	auto ab = vec<N>();
+	mult (a,b,ab);
+	return sum (ab);
+}
+template<dim N>					type inner(const vec<N>& a, const vec<N>& b)						{ return dot(a, b); }
+/* multiply a matrix by a vector */
+template<dim N, dim M>			void mult(const mat<N,M>& A, const vec<M>& a, vec<M>& o)
+{
+	for (auto i=0u; i<N; i++)
 	{
-		o[i] = _dot(A[i], a);
+		o[i]=dot (A[i], a);
 	}
 }
 /* multiplication of two matrices */
-template<dim N, dim M, dim I>	void _mult(const mat<N,M>& A, const mat<M,I>& B, mat<N,I>& O)
+template<dim N, dim M, dim I>	void mult(const mat<N,M>& A, const mat<M,I>& B, mat<N,I>& O)
 {
 	auto BT = mat<I,M>();
-	_transpose(B, BT);
+	transpose (B, BT);
 
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		for (auto j=0; j<I; j++)
+		for (auto j=0u; j<I; j++)
 		{
-			O[i][j] = _dot(A[i], BT[j]);
+			O[i][j] = dot (A[i], BT[j]);
 		}
 	}
 }
 template<dim N, dim M, dim I>	mat<M,M> mult(const mat<N,M>& A, const mat<M,I>& B)
 {
 	auto c = mat<N, I>();
-	_mult(A, B, c);
+	mult (A, B, c);
 	return c;
 }
 /* Element-wise multiplication of two matrices */
-template<dim N, dim M>			void _hadamard(const mat<N,M>& A, const mat<N,M>& B, mat<N,M>& O)
+template<dim N, dim M>			void hadamard(const mat<N,M>& A, const mat<N,M>& B, mat<N,M>& O)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		_mult(A[i], B[i], O[i]);
+		mult (A[i], B[i], O[i]);
 	}
 }
-template<dim N>					void _sub(const vec<N>& a, const vec<N>& b, vec<N>& o)
+template<dim N>					void sub(const vec<N>& a, const vec<N>& b, vec<N>& o)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		o[i] = a[i]-b[i];
+		o[i]=a[i]-b[i];
 	}
 }
-template<dim N, dim M>			void _sub(const mat<N,M>& A, const mat<N,M>& B, mat<N,M>& O)
+template<dim N, dim M>			void sub(const mat<N,M>& A, const mat<N,M>& B, mat<N,M>& O)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		_sub(A[i], B[i], O[i]);
+		sub (A[i], B[i], O[i]);
 	}
 }
-template<dim N, dim M>			void _sub(const mat<N,M>& A, const type v, mat<N,M>& O)
+template<dim N, dim M>			void sub(const mat<N,M>& A, const type v, mat<N,M>& O)
 {
 	auto st = vec<M>();
-	_fill(st, v);
+	fill(st, v);
 
-	for (auto i=0;i<N;i++)
+	for (auto i=0u;i<N;i++)
 	{
-		_sub(A[i], st, O[i]);
+		sub (A[i], st, O[i]);
 	}
 }
 /* the minor of a vector rooted at x (all elements except index x) */
-template<dim N>					void _minor(const vec<N>& a, const dim x, vec<N-1>& o)
+template<dim N>					void minor(const vec<N>& a, const dim x, vec<N-1>& o)
 {
-	for (auto i=0, m=0; i<N; i++)
+	for (auto i=0u, m=0u; i<N; i++)
 	{
 		if (i == x)
 		{
@@ -353,33 +341,38 @@ template<dim N>					void _minor(const vec<N>& a, const dim x, vec<N-1>& o)
 	}
 }
 /* Returns the minor of A rooted at ->v[x,y] */
-template<dim N, dim M>			void _minor(const mat<N,M>& A, const dim x, const dim y, mat<N-1,M-1>& O)
+template<dim N, dim M>			void minor(const mat<N,M>& A, const dim x, const dim y, mat<N-1,M-1>& O)
 {
-	for (auto i=0, m=0; i<N; i++)
+	for (auto i=0u, m=0u; i<N; i++)
 	{
 		if (i == x)
 		{
 			continue;
 		}
 
-		_minor(A[i], y, O[m++]);
+		minor (A[i], y, O[m++]);
 	}
 }
 /* Get the diagonal elements of a matrix as a vector */
-template<dim N>					void _diag(const mat<N,N>& A, vec<N>& o)
+template<dim N>					void diag(const mat<N,N>& A, vec<N>& o)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
 		o[i] = A[i][i];
 	}
 }
 /* Computes the inverse of vector a, where the inverse is 1.0/a */
-template<dim N>					void _inverse(const vec<N>& a, vec<N>& o)
+template<dim N>					void inverse(vec<N>& a)
 {
-	for (auto i=0; i<N; i++)
+	for (auto& i : a)
 	{
-		o[i] = 1.0/a[i];
+		i = 1.0/i;
 	}
+}
+template<dim N>					void inverse(const vec<N>& a, vec<N>& o)
+{
+	o = a;
+	inverse (o);
 }
 /**
  * Computes the inverse and determinant of a matrix by gaussian elimination.
@@ -391,18 +384,20 @@ template<dim N>					void _inverse(const vec<N>& a, vec<N>& o)
  * <param name="determinant">holder for the determinant of A</param>
  * <returns>identity matrix if A is non-singular</returns>
  */
-template<dim N>					void _gaussian_elimination(const mat<N,N>& A, mat<N,N>& inverse, type& determinant)
+template<dim N>					void gaussian_elimination(const mat<N,N>& A, mat<N,N>& inverse, type& determinant)
 {
 	auto C = mat<N,N>();							// output matrix to return (will be just the identity)
-	auto I = mat<N,N>();	_identity(I);			// inverse matrix
+	auto I = mat<N,N>();							// inverse matrix
 	auto diags = vec<N>();							// diagonal vector
 	auto c = zero();								// coefficent for column zeroing
+	auto tmp = vec<N>();							// working space
 
 	C = A;//_copy(A, C);
+	identity (I);
 	determinant = one();							// determinant (sign is important)
 
 	// put the matrix in row echelon form
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
 		auto k=i;
 
@@ -424,46 +419,39 @@ template<dim N>					void _gaussian_elimination(const mat<N,N>& A, mat<N,N>& inve
 		// zero this column
 		for (auto j=i+1; j<N; j++)
 		{
-			c = C[j][i] / C[i][i];			// get the diagonal of this row
-#ifndef __FAST__
-			C[j] = add(C[j], scale(C[i], -c));	// subtract and divide this diagonal from all the row
-			I[j] = add(I[j], scale(I[i], -c));
-#else
-			_mad(C[j], C[i], C[j], -c);
-			_mad(I[j], I[i], I[j], -c);
-#endif
+			c = C[j][i] / C[i][i];				// get the diagonal of this row
+
+			scale(C[i], -c, tmp);				// subtract and divide this diagonal from all the row
+			add (C[j], tmp, C[j]);
+
+			scale(I[i], -c, tmp);
+			add (I[j], tmp, I[j]);
 		}
 	}
 
-	_diag(C, diags);
-	determinant *= product_sum(diags);		// compute the determinant as the product of the diagonals
+	diag (C, diags);
+	determinant *= product_sum (diags);		// compute the determinant as the product of the diagonals
 
 	// transform the diagonals to 1 by dividing each row by the row diagonal
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
 		c = C[i][i];
-#ifndef __FAST__
-		C[i] = scale(C[i], 1.0 / c);
-		I[i] = scale(I[i], 1.0 / c);
-#else
-		_scale(C[i], 1.0 / c, C[i]);
-		_scale(I[i], 1.0 / c, I[i]);
-#endif
+		scale (C[i], 1.0 / c, C[i]);
+		scale (I[i], 1.0 / c, I[i]);
 	}
 
 	// transform the input to the identity matrix (reduced row echelon form)
-	for (auto i=N; i>0; i--)
+	for (auto i=N; i>0u; i--)
 	{
 		for (auto j=N-1; j>i-1; j--)
 		{
 			c = -C[i-1][j];
-#ifndef __FAST__
-			C[i-1] = add(scale(C[j], c), C[i-1]);
-			I[i-1] = add(scale(I[j], c), I[i-1]);
-#else
-			_mad(C[i-1], C[j], C[i-1], c);
-			_mad(I[i-1], I[j], I[i-1], c);
-#endif
+
+			scale (C[j], c, tmp);
+			add (tmp, C[i-1], C[i-1]);
+
+			scale (I[j], c, tmp);
+			add (tmp, I[i-1], I[i-1]);
 		}
 	}
 
@@ -471,12 +459,11 @@ template<dim N>					void _gaussian_elimination(const mat<N,N>& A, mat<N,N>& inve
 	inverse = I;
 }
 /* Wrapper to compute the determinant of a matrix using the gaussian elimination method */
-template<dim N>					type _determinant_gaussian_elimination(const mat<N,N>& A)
+template<dim N>					type determinant_gaussian_elimination(const mat<N,N>& A)
 {
 	type sum = 1.0;
 	auto I = mat<N,N>();
-	I = A;
-	_gaussian_elimination(A, I, sum);
+	gaussian_elimination(A, I, sum);
 	return sum;
 }
 /*
@@ -487,15 +474,15 @@ template<dim N>					type _determinant_gaussian_elimination(const mat<N,N>& A)
  * <param name="A">input matrix</param>
  * <returns>determinant of A</returns>
  */
-template<dim N>					type _determinant(const mat<N,N>& A)
+template<dim N>					type determinant(const mat<N,N>& A)
 {
-	return _determinant_gaussian_elimination(A);
+	return determinant_gaussian_elimination(A);
 }
-template<>						type _determinant(const mat<2,2>& A)
+template<>						type determinant(const mat<2,2>& A)
 {
 	return ((A[0][0]*A[1][1]) - (A[0][1]*A[1][0]));
 }
-template<>						type _determinant(const mat<3,3>& A)
+template<>						type determinant(const mat<3,3>& A)
 {
 	return ((A[0][0] * A[1][1] * A[2][2]) -
 			(A[0][0] * A[1][2] * A[2][1]) -
@@ -517,10 +504,10 @@ template<dim N, dim M>			type determinant_recursive(const mat<N,M>& A)
 	type sum = zero();
 	auto Am = mat<N-1,M-1>();
 
-	for (auto j=0; j<N; j++)
+	for (auto j=0u; j<N; j++)
 	{
-		_minor(A, 0, j, Am);
-		sum += A[0][j] * std::pow(-1.0, j) * _determinant(Am);
+		minor (A, 0, j, Am);
+		sum += A[0][j] * std::pow(-1.0, j) * determinant(Am);
 	}
 
 	return sum;
@@ -532,9 +519,9 @@ template<dim N, dim M>			void _cofactor(const mat<N,M>& A, mat<N,M>& O)
 {
 	auto Am = mat<N-1,M-1>();
 
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		for (auto j=0; j<M; j++)
+		for (auto j=0u; j<M; j++)
 		{
 			_minor(A, 0, j, Am);
 			O[i][j] = std::pow(-1.0, i + j) * _determinant(Am);
@@ -551,19 +538,19 @@ template<dim N, dim M>			void _cofactor(const mat<N,M>& A, mat<N,M>& O)
  * <param name="A">input matrix</param>
  * <returns>matrix which when multiplied with A yields the identity matrix</returns>
  */
-template<dim N, dim M>			void _inverse(const mat<N,M>& A, mat<N,M>& O)
+template<dim N, dim M>			void inverse(const mat<N,M>& A, mat<N,M>& O)
 {
 	type det = 1.0;
-	_gaussian_elimination(A, O, det);
+	gaussian_elimination (A, O, det);
 }
-template<>						void _inverse(const mat<2,2>& A, mat<2,2>& O)
+template<>						void inverse(const mat<2,2>& A, mat<2,2>& O)
 {
 	O[0][0] =  A[1][1];
 	O[0][1] = -A[0][1];
 	O[1][0] = -A[1][0];
 	O[1][1] =  A[0][0];
 
-	_scale(O, 1.0 / _determinant(A), O);
+	scale(O, 1.0 / determinant(A), O);
 }
 /* Compute the pseudo-inverse as used in linear regression problems */
 template<dim N, dim M>			void _pseudo_inverse(const mat<N,M>& A, mat<N,M>& O)
@@ -602,11 +589,11 @@ template<dim N, dim M>			void _outer(const vec<N>& a, const vec<M>& b, mat<N,M>&
 		}
 	}
 }
-template<dim N>					type _norm_squared(const vec<N>& a)
+template<dim N>					type norm_squared(const vec<N>& a)
 {
 	auto a_sq = vec<N>();
-	_mult(a, a, a_sq);
-	return _sum(a_sq);
+	mult (a, a, a_sq);
+	return sum (a_sq);
 }
 template<dim N, dim M>			type _norm_squared(const mat<N,M>& A)
 {
@@ -614,15 +601,21 @@ template<dim N, dim M>			type _norm_squared(const mat<N,M>& A)
 	_hadamard(A, A, A_sq);
 	return _sum(A_sq);
 }
-template<dim N>					type _norm(const vec<N>& a)			{ return sqrt(_norm_squared(a)); }
-template<dim N, dim M>			type _norm(const mat<N,M>& A)		{ return sqrt(_norm_squared(A)); }
-template<dim N>					type _length(const vec<N>& a)		{ return _norm(a); }
-template<dim N>					void _normalise(const vec<N>& a, vec<N>& o)
+template<dim N>					type norm(const vec<N>& a)			{ return sqrt(norm_squared(a)); }
+template<dim N, dim M>			type norm(const mat<N,M>& A)		{ return sqrt(norm_squared(A)); }
+template<dim N>					type length(const vec<N>& a)		{ return norm(a); }
+template<dim N>					void normalise(vec<N>& a)
 {
 	auto a_inv = vec<N>();
-	_fill(a_inv, _length(a));
-	_inverse(a_inv, a_inv);
-	_mult(a, a_inv, o);
+	auto l = length (a);
+	fill (a_inv, l);
+	inverse (a_inv);
+	mult(a, a_inv, a);
+}
+template<dim N>					void normalise(const vec<N>& a, vec<N>& o)
+{
+	o = a;
+	normalise (o);
 }
 /* cross product of two vectors */
 #if 0
@@ -1049,13 +1042,13 @@ public static void eig(T->v[]->v[] A, ref T->v[]->v[] V, ref T->v[] d)
 
 template<dim N, dim M>				void cholesky_decomposition(const mat<N,M>& A, mat<N,M>& O)
 {
-	for (auto i=0; i<N; i++)
+	for (auto i=0u; i<N; i++)
 	{
-		for (auto j=0; j<i+1; j++)
+		for (auto j=0u; j<i+1; j++)
 		{
 			auto s = 0.0;
 
-			for (auto k=0; k<j; k++)
+			for (auto k=0u; k<j; k++)
 			{
 				s += O[i][k] * O[j][k];
 			}
@@ -1082,13 +1075,13 @@ template<dim N, dim M>				bool is_identity (const mat<N,M>& A, const type tolera
 {
 	// should only have 1.0 in the diagonals, so the sum is the
 	// size of the matrix (allowing for rounding error)
-	if (abs(_sum(A) - N) > tolerance)
+	if (abs(sum(A) - N) > tolerance)
 	{
 		return 0;
 	}
 
 	// check the actual diagonals
-	for (auto i=0; i<N;i++)
+	for (auto i=0u; i<N;i++)
 	{
 		if (abs(1.0 - A[i][i]) > tolerance)
 		{
@@ -1097,17 +1090,6 @@ template<dim N, dim M>				bool is_identity (const mat<N,M>& A, const type tolera
 	}
 
 	return true;
-}
-template<dim N, dim M>				void print_matrix (const mat<N,M>& A)
-{
-	for (auto i=0;i<M;i++)
-	{
-		for (auto j=0;j<N;j++)
-		{
-			fprintf(stdout, "%0.4f \0", A[i][j]);
-		}
-		fprintf (stdout, "\n\0");
-	}
 }
 /// <summary>
 /// checks if a matrix is a square matrix
@@ -1124,39 +1106,34 @@ template<dim N, dim M>				bool is_square(const mat<N,M>& A)
 }
 template<dim N, dim M>				bool is_transpose(const mat<N,M>& A, const mat<M,N>& B, type tolerance = 0.0001)
 {
-	dim i, j;
-
-	if (A.size() != B[0].size())			{ return 0; }
-	if (A[0].size() != B.size())			{ return 0; }
-
-	for (i = 0; i < A.size(); i++)
+	for (auto i=0u; i<N; i++)
 	{
-		for (j = 0; j < A[0].size(); j++)
+		for (auto j=0u; j<M; j++)
 		{
-			if (B[j][i] - A[i][j] > tolerance)
+			if (B[j][i]-A[i][j] > tolerance)
 			{
-				return 0;
+				return false;
 			}
 		}
 	}
 
-	return 1;
+	return true;
 }
 
 template<dim N, dim M>				bool are_equal(const mat<N,M>& A, const mat<N,M>& B, type tolerance = 0.0001)
 {
-	for (auto i=0;i<N;i++)
+	for (auto i=0u;i<N;i++)
 	{
-		for (auto j=0;j<M;j++)
+		for (auto j=0u;j<M;j++)
 		{
 			if (abs(A[i][j] - B[i][j]) > tolerance)
 			{
-				return 0;
+				return false;
 			}
 		}
 	}
 
-	return 1;
+	return true;
 }
 
 template<dim N, dim M>				void _least_squares_regression(const mat<N,M>& design_matrix, const mat<N,1>& observations, mat<1,M>& O)
