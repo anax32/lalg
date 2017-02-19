@@ -1,62 +1,34 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-
 #define __FAST__
-#define TEST_MODULES
 
 #include <cmath>
 #include <array>
 #include <functional>
 
-typedef long unsigned int	dim;
-typedef double			type;
-
-template <dim N>
-using vec = std::array<type, N>;
-
-template <dim N, dim M>
-using mat = std::array<vec<M>, N>;
-
-template<dim N>
-void print_vec(vec<N> v)
+namespace lalg
 {
-	dim i;
-	for (i=0;i<v.size();i++)
-	{
-		fprintf(stdout, "%0.2f ,", v[i]);
-	}
-}
-template<dim N, dim M>
-void print_mat(mat<N,M> A)
+	typedef long unsigned int	dim;
+	typedef double			type;
+
+	template <dim N>
+	using vec = std::array<type, N>;
+
+	template <dim N, dim M>
+	using mat = std::array<vec<M>, N>;
+
+	/* generator functions */
+	type zero()											{return 0.0;}
+	type one()											{return 1.0;}
+	type rando()										{return ((type)rand() / (type)RAND_MAX);}
+	type sigmoid(type x)								{return 1.0 / (1.0 + exp(-x));}
+	type sigmoid_derivative(type x)						{return x * (1.0 - x);}
+
+template<dim N>					void fill(vec<N>& a, type x)
 {
-	dim i;
-
-	for (i=0; i<A.size(); i++)
+//	for (auto i=0; i<a.size (); i++)
+	for (auto i : a)
 	{
-		print_vec(A[i]);
-		fprintf(stdout, "\n\0");
-	}
-	fprintf(stdout, "\n\0");
-}
-
-/* copy data */
-template<dim I> void _copy(const vec<I>& src, vec<I>& dst)										{ dst = src; }
-template<dim N, dim M> void _copy(const mat<N,M>& src, mat<N,M>& dst)							{ dst = src; }
-
-/* generator functions */
-type zero()											{return 0.0;}
-type one()											{return 1.0;}
-type rando()										{return ((type)rand() / (type)RAND_MAX);}
-type sigmoid(type x)								{return 1.0 / (1.0 + exp(-x));}
-type sigmoid_derivative(type x)						{return x * (1.0 - x);}
-
-template<dim N>					void _fill(vec<N>& a, type x)
-{
-	dim i;
-	for (i=0; i<a.size (); i++)
-	{
-		a[i] = x;
+		//a[i] = x;
+		i = x;
 	}
 }
 template<dim N, dim M>			void _fill(mat<N,M>& A, type x)
@@ -174,34 +146,20 @@ template<dim N, dim M>			void _counter(mat<N,M>& A)
 		}
 	}
 }
-/* swap two vectors using a local copy */
-#if false
-template<dim N>					void swap(vec<N>& a, vec<N>& b)
-{
-#ifndef __FAST__
-	auto c = copy(a);
-	a = copy(b);
-	b = copy(c);
-#else
-	type c = 0.0;
-	dim i;
 
-	for (i=0; i<a.size(); i++)
-	{
-		c = a[i];
-		a[i] = b[i];
-		b[i] = c;
-	}
-#endif
-}
-#endif
 /* Element-wise negation of a vector a (i.e., a = -a) */
 template<dim N>					void _negate(const vec<N>& a, vec<N>& o)
 {
-	dim i;
-	for (i=0; i<a.size(); i++)
+	for (auto i=0; i<a.size(); i++)
 	{
 		o[i] = -a[i];
+	}
+}
+template<dim N>					void negate (vec<N>& a)
+{
+	for (auto i : a)
+	{
+		a = -a;
 	}
 }
 /* Element-wise negation of a matrix A */
@@ -210,6 +168,13 @@ template<dim N, dim M>			void _negate(const mat<N,M>& A, mat<N,M>& O)
 	for (auto i=0; i<N; i++)
 	{
 		_negate(A[i], O[i]);
+	}
+}
+template<dim N, dim M>			void negate(mat<N,M>& A)
+{
+	for (auto v : A)
+	{
+		negate (v);
 	}
 }
 /* Transposes a matrix */
@@ -1203,3 +1168,4 @@ template<dim N, dim M>				void _least_squares_regression(const mat<N,M>& design_
 	_pseudo_inverse(design_matrix, ps_inv);
 	_mult(ps_inv, observations, O);
 }
+};
