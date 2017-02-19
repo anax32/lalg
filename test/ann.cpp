@@ -144,11 +144,15 @@ void neural_network_3_layer_test()
 	assert_are_equal_t (Y[3][0], round(layer2[3][0]), 0.001);
 }
 
-int main(int argc, char **argv)
+void neural_network_tests ()
 {
 	TEST(neural_network_2_layer_test);
 	//TEST(neural_network_3_layer_test);
+}
 
+int main(int argc, char **argv)
+{
+	TEST_GROUP(neural_network_tests);
 	return 0;
 }
 

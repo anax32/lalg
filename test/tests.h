@@ -12,29 +12,64 @@
 #define assert_is_true(x)			(assert(x != 0))
 #define assert_is_false(x)			(assert(x == 0))
 
-#if 0
-#define TEST(x)			{fprintf(stdout, "  %-45s", #x);clock_t T=clock(); x(); fprintf(stdout," [%0.4fs]\n\0", (double)(clock()-T)/CLOCKS_PER_SEC);}
-#define TEST_GROUP(x)	{fprintf(stdout, " %s\n\0", #x); clock_t T=clock(); x(); fprintf(stdout, " %-40s GROUP [%0.4fs]\n\0", #x, (double)(clock()-T)/CLOCKS_PER_SEC);}
-#define TEST_SUITE(x)	{fprintf(stdout, "%-45s\n\0", #x); clock_t T=clock(); x(); fprintf(stdout, " %-39s SUITE [%0.4fs]\n\0", #x, (double)(clock()-T)/CLOCKS_PER_SEC);}
-#else
-void time_function (std::function<void()> x, const char* fname)
+#define TEST_REPORT_DEPTH 2
+
+void time_function (std::function<void()> x, const char* fname, const int L)
 {
-	fprintf(stdout, "  %-45s", fname);
-	clock_t T=clock();
+	clock_t T;
+
+	if (L<=TEST_REPORT_DEPTH)
+	{
+		int La=L;
+		while (La--)
+			fprintf (stdout, " ");
+
+		// FIXME: %-45-Ls
+		fprintf(stdout, "%-45s", fname);
+		T=clock();
+	}
+
 	x();
-	fprintf(stdout," [%0.4fs]\n", (double)(clock()-T)/CLOCKS_PER_SEC);
+
+	if (L<=TEST_REPORT_DEPTH)
+	{
+		int La = L;
+		while (La--)
+			fprintf (stdout, " ");
+
+		fprintf(stdout,"[%0.4fs]\n", (double)(clock()-T)/CLOCKS_PER_SEC);
+	}
 }
-void time_function (std::function<void()> x, const char* fname, const char* group)
+void time_function (std::function<void()> x, const char* fname, const char* group, const int L)
 {
-	fprintf(stdout, " %s\n", fname);
-	clock_t T=clock();
+	clock_t T;
+
+	if (L<TEST_REPORT_DEPTH)
+	{
+		int La=L;
+		while (La--)
+			fprintf (stdout, " ");
+		fprintf(stdout, "%s\n", fname);
+	}
+
+	if (L<=TEST_REPORT_DEPTH)
+		T=clock();
+
 	x();
-	fprintf(stdout, " %-40s %s [%0.4fs]\n", fname, group, (double)(clock()-T)/CLOCKS_PER_SEC);
+	
+	if (L<=TEST_REPORT_DEPTH)
+	{
+		int La=L;
+		while (La--)
+			fprintf (stdout, " ");
+
+		// FIXME: %(-40-L)s 
+		fprintf(stdout, "%-40s %s [%0.4fs]\n", fname, group, (double)(clock()-T)/CLOCKS_PER_SEC);
+	}
 }
-#define TEST(x)			{time_function (x, #x);}
-#define TEST_GROUP(x)	{time_function (x, #x, "GROUP");}
-#define TEST_SUITE(x)	{time_function (x, #x, "SUITE");}
-#endif
+#define TEST(x)			{time_function (x, #x, 2);}
+#define TEST_GROUP(x)	{time_function (x, #x, "GROUP", 1);}
+#define TEST_SUITE(x)	{time_function (x, #x, "SUITE", 0);}
 
 template<dim N>
 void print (vec<N> v)

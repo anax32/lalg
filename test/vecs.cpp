@@ -459,11 +459,16 @@ void vector_batch_tests ()
     TEST(many_mult_test);
 }
 
-int main(int argc, char **argv)
+void vector_tests ()
 {
-	TEST_GROUP(vector_contents_tests);
+    TEST_GROUP(vector_contents_tests);
     TEST_GROUP(vector_operations_tests);
     TEST_GROUP(vector_measures_tests);
     TEST_GROUP(vector_batch_tests);
+}
+
+int main(int argc, char **argv)
+{
+	TEST_SUITE(vector_tests);
 	return 0;
 }

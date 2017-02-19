@@ -858,11 +858,16 @@ void matrix_batch_tests ()
     TEST(many_hadamard_test);
 }
 
-int main (int argc, char **argv)
+void matrix_tests ()
 {
-    TEST_GROUP(matrix_contents_tests);
+	TEST_GROUP(matrix_contents_tests);
     TEST_GROUP(matrix_operations_tests);
     TEST_GROUP(matrix_extraction_tests);
     TEST_GROUP(matrix_batch_tests);
+}
+
+int main (int argc, char **argv)
+{
+    TEST_SUITE(matrix_tests);
     return 0;
 }
