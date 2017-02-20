@@ -6,6 +6,8 @@
 #include <assert.h>
 #include <time.h>
 
+#include <functional>
+
 #define assert_are_equal(x,y)		(assert(x == y))
 #define assert_are_equal_t(x,y,t)	(assert(abs(x-y)<t))
 #define assert_are_not_equal(x,y)	(assert(x != y))
@@ -71,6 +73,7 @@ void time_function (std::function<void()> x, const char* fname, const char* grou
 #define TEST_GROUP(x)	{time_function (x, #x, "GROUP", 1);}
 #define TEST_SUITE(x)	{time_function (x, #x, "SUITE", 0);}
 
+#ifdef vec
 template<dim N>
 void print (vec<N> v)
 {
@@ -89,3 +92,4 @@ void print (mat<N,M> A)
 	}
 	fprintf(stdout, "\n");
 }
+#endif

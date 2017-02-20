@@ -26,7 +26,7 @@ $(PROJS_BIN_DIR): $(TEST_BIN_DIR)
 test/% : test/%.cpp $(PROJS_BIN_DIR)
 	$(CXX) $(CXXFLAGS) -I$(INCLUDE) $(LDLIBS) -o $(BIN_DIR)$@ $<
 
-all_tests : $(TEST_OUTPUTS); $(info test_outputs is $(TEST_OUTPUTS))
+all_tests : $(TEST_OUTPUTS)
 
 all: all_tests run_all
 
