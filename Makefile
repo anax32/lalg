@@ -1,9 +1,18 @@
 MKDIR = mkdir -p
-CC = g++
-FLAGS = -Wall -std=c++14
+CXX = g++
+CXXFLAGS = -std=c++14
+INCLUDE = include/
+LDLIBS = -lpng -lX11 -lGL -lGLEW
+
 BIN_DIR = bin/
 TEST_DIR = test/
 TEST_BIN_DIR = bin/test/
+
+PROJS = lalg/ gl/ img_io/
+PROJS_BIN_DIR = $(PROJS:%=$(TEST_BIN_DIR)%)
+
+TESTS = $(wildcard test/*/*.cpp)
+TEST_OUTPUTS = $(TESTS:.cpp=)
 
 $(BIN_DIR):
 	 $(MKDIR) $(BIN_DIR)
@@ -11,24 +20,18 @@ $(BIN_DIR):
 $(TEST_BIN_DIR): $(BIN_DIR)
 	$(MKDIR) $(TEST_BIN_DIR)
 
-test_funcs: $(TEST_DIR)funcs.cpp mats.h $(TEST_BIN_DIR)
-	$(CC) $(FLAGS) -o $(TEST_BIN_DIR)$@ $(TEST_DIR)funcs.cpp
+$(PROJS_BIN_DIR): $(TEST_BIN_DIR)
+	$(MKDIR) $(PROJS_BIN_DIR)
 
-test_vec_ops: $(TEST_DIR)vecs.cpp mats.h $(TEST_BIN_DIR)
-	$(CC) $(FLAGS) -o $(TEST_BIN_DIR)$@ $(TEST_DIR)vecs.cpp
+test/% : test/%.cpp $(PROJS_BIN_DIR)
+	$(CXX) $(CXXFLAGS) -I$(INCLUDE) $(LDLIBS) -o $(BIN_DIR)$@ $<
 
-test_mat_ops: $(TEST_DIR)mats.cpp mats.h $(TEST_BIN_DIR)
-	$(CC) $(FLAGS) -o $(TEST_BIN_DIR)$@ $(TEST_DIR)mats.cpp
+all_tests : $(TEST_OUTPUTS); $(info test_outputs is $(TEST_OUTPUTS))
 
-test_lin_reg: $(TEST_DIR)lin_reg.cpp mats.h $(TEST_BIN_DIR)
-	$(CC) $(FLAGS) -o $(TEST_BIN_DIR)$@ $(TEST_DIR)lin_reg.cpp
+all: all_tests run_all
 
-test_ann: $(TEST_DIR)ann.cpp mats.h $(TEST_BIN_DIR)
-	$(CC) $(FLAGS) -o $(TEST_BIN_DIR)$@ $(TEST_DIR)ann.cpp
-
-all_tests: test_funcs test_vec_ops test_mat_ops test_lin_reg test_ann
-
-all: all_tests
+run_all:
+	@for dir in $(TEST_BIN_DIR)*; do run-parts $$dir; done
 
 clean:
 	rm -drf $(BIN_DIR) $(TEST_BIN_DIR)

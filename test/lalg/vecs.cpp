@@ -1,5 +1,5 @@
-#include "../mats.h"
-#include "tests.h"
+#include "../../include/lalg/mats.h"
+#include "../tests.h"
 
 void alloc_test ()
 {
