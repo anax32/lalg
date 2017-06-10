@@ -15,7 +15,7 @@ TESTS = $(wildcard test/*/*.cpp)
 TEST_OUTPUTS = $(TESTS:.cpp=)
 
 $(BIN_DIR):
-	 $(MKDIR) $(BIN_DIR)
+	$(MKDIR) $(BIN_DIR)
 
 $(TEST_BIN_DIR): $(BIN_DIR)
 	$(MKDIR) $(TEST_BIN_DIR)

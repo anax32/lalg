@@ -66,14 +66,14 @@ void ones_test ()
 
 void counter_test ()
 {
-	auto a = vec<5>();
-	counter (a);
+  auto a = vec<5>();
+  counter (a);
 
-	assert_are_equal (a[0], 1);
-	assert_are_equal (a[1], 2);
-	assert_are_equal (a[2], 3);
-	assert_are_equal (a[3], 4);
-	assert_are_equal (a[4], 5);   
+  assert_are_equal (a[0], 1);
+  assert_are_equal (a[1], 2);
+  assert_are_equal (a[2], 3);
+  assert_are_equal (a[3], 4);
+  assert_are_equal (a[4], 5);   
 }
 
 void vector_contents_tests ()
@@ -145,30 +145,30 @@ void scale_output_test ()
 }
 void sum_test()
 {
-	auto a = vec<5>();
-	counter(a);
-	assert_are_equal(1 + 2 + 3 + 4 + 5, sum(a));
+  auto a = vec<5>();
+  counter(a);
+  assert_are_equal(1 + 2 + 3 + 4 + 5, sum(a));
 }
 void product_sum_test()
 {
-	auto a = vec<5>();
-	counter (a);
-	assert_are_equal (1*2*3*4*5, product_sum(a));
+  auto a = vec<5>();
+  counter (a);
+  assert_are_equal (1*2*3*4*5, product_sum(a));
 }
 void add_test()
 {
-	auto a = vec<5>();
-	auto b = vec<5>();
-	auto c = vec<5>();
+  auto a = vec<5>();
+  auto b = vec<5>();
+  auto c = vec<5>();
 
-	counter(a);
-	ones(b);
-	add(a, b, c);
+  counter(a);
+  ones(b);
+  add(a, b, c);
 
-	for (auto i=0u; i<c.size(); i++)
-	{
-		assert_are_equal (a[i]+b[i], c[i]);
-	}
+  for (auto i=0u; i<c.size(); i++)
+  {
+    assert_are_equal (a[i]+b[i], c[i]);
+  }
 }
 void mad_test ()
 {
@@ -189,32 +189,32 @@ void mad_test ()
 }
 void mult_inplace_test()
 {
-	auto a = vec<5>();
-	auto b = vec<5>();
+  auto a = vec<5>();
+  auto b = vec<5>();
 
-	counter (a);
-	fill (b, 2.0);
-	auto c = mult (a, b);
+  counter (a);
+  fill (b, 2.0);
+  auto c = mult (a, b);
 
-	for (auto i=0u; i<c.size(); i++)
-	{
-		assert_are_equal (a[i]*b[i], c[i]);
-	}    
+  for (auto i=0u; i<c.size(); i++)
+  {
+    assert_are_equal (a[i]*b[i], c[i]);
+  }    
 }
 void mult_output_test()
 {
-	auto a = vec<5>();
-	auto b = vec<5>();
-	auto c = vec<5>();
+  auto a = vec<5>();
+  auto b = vec<5>();
+  auto c = vec<5>();
 
-	counter (a);
-	fill (b, 2.0);
-	mult (a, b, c);
+  counter (a);
+  fill (b, 2.0);
+  mult (a, b, c);
 
-	for (auto i=0u; i<c.size(); i++)
-	{
-		assert_are_equal (a[i]*b[i], c[i]);
-	}
+  for (auto i=0u; i<c.size(); i++)
+  {
+    assert_are_equal (a[i]*b[i], c[i]);
+  }
 }
 void dot_ones_test ()
 {
@@ -248,44 +248,44 @@ void inner_test ()
 }
 void sub_test()
 {
-	auto a = vec<5>();
-	auto b = vec<5>();
-	auto c = vec<5>();
+  auto a = vec<5>();
+  auto b = vec<5>();
+  auto c = vec<5>();
 
-	counter(a);
-	ones(b);
-	sub(a, b, c);
+  counter(a);
+  ones(b);
+  sub(a, b, c);
 
-	for (auto i=0u; i<c.size(); i++)
-	{
-		assert_are_equal (a[i]-b[i], c[i]);
-	}
+  for (auto i=0u; i<c.size(); i++)
+  {
+    assert_are_equal (a[i]-b[i], c[i]);
+  }
 }
 void multiply_test()
 {
-	auto a = vec<5>();
-	auto b = vec<5>();
-	auto c = vec<5>();
+  auto a = vec<5>();
+  auto b = vec<5>();
+  auto c = vec<5>();
 
-	counter (a);
-	fill (b, 2.0);
-	mult (a, b, c);
+  counter (a);
+  fill (b, 2.0);
+  mult (a, b, c);
 
-	for (auto i=0u; i<a.size(); i++)
-	{
-		assert_are_equal (a[i]*b[i], c[i]);
-	}
+  for (auto i=0u; i<a.size(); i++)
+  {
+    assert_are_equal (a[i]*b[i], c[i]);
+  }
 }
 void minor_test()
 {
-	auto a = vec<5>();
-	auto am = vec<4>();
+  auto a = vec<5>();
+  auto am = vec<4>();
 
     counter (a);
-	minor(a, 2, am);
+  minor(a, 2, am);
 
-	assert_are_equal (a.size()-1, am.size());
-	assert_are_equal (12, sum(am));
+  assert_are_equal (a.size()-1, am.size());
+  assert_are_equal (12, sum(am));
 }
 void inverse_ones_output_test ()
 {
@@ -417,40 +417,40 @@ void vector_measures_tests ()
 template<int VECTOR_SIZE=50, int BATCH_SIZE=5000>
 void many_add_test()
 {
-	auto a = vec<VECTOR_SIZE>();
-	auto b = vec<VECTOR_SIZE>();
-	auto c = vec<VECTOR_SIZE>();
+  auto a = vec<VECTOR_SIZE>();
+  auto b = vec<VECTOR_SIZE>();
+  auto c = vec<VECTOR_SIZE>();
 
-	for (auto i=0; i<BATCH_SIZE; i++)
-	{
-		counter(a);
-		fill(b, i);
-		add(a, b, c);
+  for (auto i=0; i<BATCH_SIZE; i++)
+  {
+    counter(a);
+    fill(b, i);
+    add(a, b, c);
 
-		for (auto j=0u; j<c.size(); j++)
-		{
-			assert_are_equal (a[j]+b[j], c[j]);
-		}
-	}
+    for (auto j=0u; j<c.size(); j++)
+    {
+      assert_are_equal (a[j]+b[j], c[j]);
+    }
+  }
 }
 template<int VECTOR_SIZE=50, int BATCH_SIZE=5000>
 void many_mult_test()
 {
-	auto a = vec<VECTOR_SIZE>();
-	auto b = vec<VECTOR_SIZE>();
-	auto c = vec<VECTOR_SIZE>();
+  auto a = vec<VECTOR_SIZE>();
+  auto b = vec<VECTOR_SIZE>();
+  auto c = vec<VECTOR_SIZE>();
 
-	for (auto i=0u; i<BATCH_SIZE; i++)
-	{
-		counter(a);
-		fill(b, i);
-		mult(a, b, c);
+  for (auto i=0u; i<BATCH_SIZE; i++)
+  {
+    counter(a);
+    fill(b, i);
+    mult(a, b, c);
 
-		for (auto j=0u; j<c.size(); j++)
-		{
-			assert_are_equal (a[j]*b[j], c[j]);
-		}
-	}
+    for (auto j=0u; j<c.size(); j++)
+    {
+      assert_are_equal (a[j]*b[j], c[j]);
+    }
+  }
 }
 
 void vector_batch_tests ()
@@ -469,6 +469,6 @@ void vector_tests ()
 
 int main(int argc, char **argv)
 {
-	TEST_SUITE(vector_tests);
-	return 0;
+  TEST_SUITE(vector_tests);
+  return 0;
 }

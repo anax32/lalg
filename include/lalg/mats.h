@@ -116,7 +116,7 @@ void ones (mat<N,M>& A)
   map(A, one, A);
 }
 /* fills a matrix like A with random numbers (0..1] */
-//mat random(mat A)								{ return map(A, rando); }
+//mat random(mat A)                { return map(A, rando); }
 /* Returns a square identity matrix of given size */
 template<dim N>
 void identity (mat<N,N>& A)
@@ -724,38 +724,38 @@ void normalise (const vec<N>& a, vec<N>& o)
 }
 /* cross product of two vectors */
 #if 0
-template<dim N>					void _cross(vec<N> a, vec<N> b, vec<N> o)
+template<dim N>          void _cross(vec<N> a, vec<N> b, vec<N> o)
 {
-	check_size_match(a, b);
-	type d = zero();
+  check_size_match(a, b);
+  type d = zero();
 
-	auto A = make(4);	A[0] = a[1]; A[1] = a[2]; A[2] = a[0]; A[3] = d;
-	auto B = make(4);	B[0] = b[2]; B[1] = b[0]; B[2] = b[1]; B[3] = d;
-	auto C = make(4);	C[0] = a[2]; C[1] = a[0]; C[2] = a[1]; C[3] = d;
-	auto D = make(4);	D[0] = b[1]; D[1] = b[2]; D[2] = b[0]; D[3] = d;
+  auto A = make(4);  A[0] = a[1]; A[1] = a[2]; A[2] = a[0]; A[3] = d;
+  auto B = make(4);  B[0] = b[2]; B[1] = b[0]; B[2] = b[1]; B[3] = d;
+  auto C = make(4);  C[0] = a[2]; C[1] = a[0]; C[2] = a[1]; C[3] = d;
+  auto D = make(4);  D[0] = b[1]; D[1] = b[2]; D[2] = b[0]; D[3] = d;
 
-	/*
-	return sub(mult(make(4, new vec_t{4, new type[4]{a->v[1], a->v[2], a->v[0], d}}),
-	make(4, new vec_t{4, new type[4]{b->v[2], b->v[0], b->v[1], d}})),
-	mult(make(4, new vec_t{4, new type[4]{a->v[2], a->v[0], a->v[1], d}}),
-	make(4, new vec_t{4, new type[4]{b->v[1], b->v[2], b->v[0], d}})));
-	*/
-	auto AB = make(4); _mult(A, B, AB);
-	auto CD = make(4); _mult(C, D, CD);
-	auto AB_CD = make(4); _sub(AB, CD, AB_CD);
-	
-	o[0] = AB_CD[0];
-	o[1] = AB_CD[1];
-	o[2] = AB_CD[2];
-	o[3] = AB_CD[3];
+  /*
+  return sub(mult(make(4, new vec_t{4, new type[4]{a->v[1], a->v[2], a->v[0], d}}),
+  make(4, new vec_t{4, new type[4]{b->v[2], b->v[0], b->v[1], d}})),
+  mult(make(4, new vec_t{4, new type[4]{a->v[2], a->v[0], a->v[1], d}}),
+  make(4, new vec_t{4, new type[4]{b->v[1], b->v[2], b->v[0], d}})));
+  */
+  auto AB = make(4); _mult(A, B, AB);
+  auto CD = make(4); _mult(C, D, CD);
+  auto AB_CD = make(4); _sub(AB, CD, AB_CD);
+  
+  o[0] = AB_CD[0];
+  o[1] = AB_CD[1];
+  o[2] = AB_CD[2];
+  o[3] = AB_CD[3];
 
-	//cake(A);
-	//cake(B);
-	//cake(C);
-	//cake(D);
-	//cake(AB);
-	//cake(CD);
-	//cake(AB_CD);
+  //cake(A);
+  //cake(B);
+  //cake(C);
+  //cake(D);
+  //cake(AB);
+  //cake(CD);
+  //cake(AB_CD);
 }
 #endif
 
@@ -768,12 +768,12 @@ template<dim N>					void _cross(vec<N> a, vec<N> b, vec<N> o)
 /// <returns>matrix combining the input and the geometric translation</returns>
 mat translate(mat M, vec v)
 {
-	check_size_match(M, vec_size(v), vec_size(v));
-	mat c = identity(vec_size(M->v[0]));
-	c->v[0]->v[3] = v->v[0];
-	c->v[1]->v[3] = v->v[1];
-	c->v[2]->v[3] = v->v[2];
-	return mult(M, c);
+  check_size_match(M, vec_size(v), vec_size(v));
+  mat c = identity(vec_size(M->v[0]));
+  c->v[0]->v[3] = v->v[0];
+  c->v[1]->v[3] = v->v[1];
+  c->v[2]->v[3] = v->v[2];
+  return mult(M, c);
 }
 /// <summary>
 /// Apply geometric rotation to a 4x4 matrix
@@ -783,22 +783,22 @@ mat translate(mat M, vec v)
 /// <returns>matrix combining the input and the geometric rotation</returns>
 mat rotate(mat M, vec xyz)
 {
-	check_size_match(M, 4, 4);
-	check_size_match(M, xyz);
+  check_size_match(M, 4, 4);
+  check_size_match(M, xyz);
 
-	var ca = (T)Math.Cos((double)xyz->v[0]);
-	var sa = (T)Math.Sin((double)xyz->v[0]);
-	var cb = (T)Math.Cos((double)xyz->v[1]);
-	var sb = (T)Math.Sin((double)xyz->v[1]);
-	var cc = (T)Math.Cos((double)xyz->v[2]);
-	var sc = (T)Math.Sin((double)xyz->v[2]);
+  var ca = (T)Math.Cos((double)xyz->v[0]);
+  var sa = (T)Math.Sin((double)xyz->v[0]);
+  var cb = (T)Math.Cos((double)xyz->v[1]);
+  var sb = (T)Math.Sin((double)xyz->v[1]);
+  var cc = (T)Math.Cos((double)xyz->v[2]);
+  var sc = (T)Math.Sin((double)xyz->v[2]);
 
-	var xa = make(4, cb * cc, -ca * sc + sa * sb * cc, ca * sb * cc + sa * sc, default(T));
-	var ya = make(4, cb * sc, ca * cc + sa * sb * sc, -sa * cc + ca * sb * sc, default(T));
-	var za = make(4, -sb, sa * cb, ca * cb, default(T));
-	var wa = fill(copy(za), default(T));
+  var xa = make(4, cb * cc, -ca * sc + sa * sb * cc, ca * sb * cc + sa * sc, default(T));
+  var ya = make(4, cb * sc, ca * cc + sa * sb * sc, -sa * cc + ca * sb * sc, default(T));
+  var za = make(4, -sb, sa * cb, ca * cb, default(T));
+  var wa = fill(copy(za), default(T));
 
-	return mult(M, make(4, 4, xa, ya, za, wa));
+  return mult(M, make(4, 4, xa, ya, za, wa));
 }
 /// <summary>
 /// Creates a 4x4 geometric scaling matrix
@@ -810,14 +810,14 @@ mat rotate(mat M, vec xyz)
 /// <returns>matrix combining the input and the given scaling factors</returns>
 public static T->v[]->v[] scale(T->v[]->v[] M, T x, T y, T z)
 {
-	check_size_match(M, 4, 4);
+  check_size_match(M, 4, 4);
 
-	var d = default(T);
+  var d = default(T);
 
-	return mult(M, make(4, 4, make(4, x, d, d, d),
-		make(4, d, y, d, d),
-		make(4, d, d, z, d),
-		make(4, d, d, d, 1)));
+  return mult(M, make(4, 4, make(4, x, d, d, d),
+    make(4, d, y, d, d),
+    make(4, d, d, z, d),
+    make(4, d, d, d, 1)));
 }
 #endif
 
@@ -827,289 +827,289 @@ public static T->v[]->v[] scale(T->v[]->v[] M, T x, T y, T z)
 */
 private static void tred2(T->v[]->v[] V, T->v[] d, T->v[] e)
 {
-	var n = V.Length;
+  var n = V.Length;
 
-	//  This is derived from the Algol procedures tred2 by
-	//  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
-	//  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
-	//  Fortran subroutine in EISPACK.
-	int i, j, k;
-	T	f, g, h, hh;
+  //  This is derived from the Algol procedures tred2 by
+  //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
+  //  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
+  //  Fortran subroutine in EISPACK.
+  int i, j, k;
+  T  f, g, h, hh;
 
-	for (j = 0; j < n; j++)							{ d->v[j] = V->v[n - 1]->v[j]; }
+  for (j = 0; j < n; j++)              { d->v[j] = V->v[n - 1]->v[j]; }
 
-	// Householder reduction to tridiagonal form.
-	for (i = n - 1; i > 0; i--)
-	{
-		// Scale to avoid under/overflow.
-		double scale = 0.0;
-		double h2 = 0.0;
+  // Householder reduction to tridiagonal form.
+  for (i = n - 1; i > 0; i--)
+  {
+    // Scale to avoid under/overflow.
+    double scale = 0.0;
+    double h2 = 0.0;
 
-		for (k = 0; k < i; k++)						{ scale = scale + Math.Abs(d->v[k]); }
+    for (k = 0; k < i; k++)            { scale = scale + Math.Abs(d->v[k]); }
 
-		if (scale == 0.0)
-		{
-			e->v[i] = d->v[i - 1];
+    if (scale == 0.0)
+    {
+      e->v[i] = d->v[i - 1];
 
-			for (j = 0; j < i; j++)
-			{
-				d->v[j] = V->v[i - 1]->v[j];
-				V->v[i]->v[j] = 0.0;
-				V->v[j]->v[i] = 0.0;
-			}
-		}
-		else
-		{
-			// Generate Householder vector.
-			for (k = 0; k < i; k++)					{ d->v[k] /= scale; h2 += d->v[k] * d->v[k]; }
+      for (j = 0; j < i; j++)
+      {
+        d->v[j] = V->v[i - 1]->v[j];
+        V->v[i]->v[j] = 0.0;
+        V->v[j]->v[i] = 0.0;
+      }
+    }
+    else
+    {
+      // Generate Householder vector.
+      for (k = 0; k < i; k++)          { d->v[k] /= scale; h2 += d->v[k] * d->v[k]; }
 
-			f = d->v[i - 1];
-			g = Math.Sqrt(h2);
+      f = d->v[i - 1];
+      g = Math.Sqrt(h2);
 
-			g = (f > 0) ? (-g) : (g);
+      g = (f > 0) ? (-g) : (g);
 
-			e->v[i] = scale * g;
-			h2 -= f * g;
-			d->v[i - 1] = f - g;
+      e->v[i] = scale * g;
+      h2 -= f * g;
+      d->v[i - 1] = f - g;
 
-			for (j = 0; j < i; j++)					{ e->v[j] = 0.0; }
+      for (j = 0; j < i; j++)          { e->v[j] = 0.0; }
 
-			// Apply similarity transformation to remaining columns.
-			for (j = 0; j < i; j++)
-			{
-				f = d->v[j];
-				V->v[j]->v[i] = f;
-				g = e->v[j] + V->v[j]->v[j] * f;
+      // Apply similarity transformation to remaining columns.
+      for (j = 0; j < i; j++)
+      {
+        f = d->v[j];
+        V->v[j]->v[i] = f;
+        g = e->v[j] + V->v[j]->v[j] * f;
 
-				for (k = j + 1; k <= i - 1; k++)
-				{
-					g += V->v[k]->v[j] * d->v[k];
-					e->v[k] += V->v[k]->v[j] * f;
-				}
+        for (k = j + 1; k <= i - 1; k++)
+        {
+          g += V->v[k]->v[j] * d->v[k];
+          e->v[k] += V->v[k]->v[j] * f;
+        }
 
-				e->v[j] = g;
-			}
+        e->v[j] = g;
+      }
 
-			f = 0.0;
+      f = 0.0;
 
-			for (j = 0; j < i; j++)					{ e->v[j] /= h2; f += e->v[j] * d->v[j]; }
+      for (j = 0; j < i; j++)          { e->v[j] /= h2; f += e->v[j] * d->v[j]; }
 
-			hh = f / (h2 + h2);
+      hh = f / (h2 + h2);
 
-			for (j = 0; j < i; j++)					{ e->v[j] -= hh * d->v[j]; }
+      for (j = 0; j < i; j++)          { e->v[j] -= hh * d->v[j]; }
 
-			for (j = 0; j < i; j++)
-			{
-				f = d->v[j];
-				g = e->v[j];
+      for (j = 0; j < i; j++)
+      {
+        f = d->v[j];
+        g = e->v[j];
 
-				for (k = j; k <= i - 1; k++)			{ V->v[k]->v[j] -= (f * e->v[k] + g * d->v[k]); }
+        for (k = j; k <= i - 1; k++)      { V->v[k]->v[j] -= (f * e->v[k] + g * d->v[k]); }
 
-				d->v[j] = V->v[i - 1]->v[j];
-				V->v[i]->v[j] = 0.0;
-			}
-		}
+        d->v[j] = V->v[i - 1]->v[j];
+        V->v[i]->v[j] = 0.0;
+      }
+    }
 
-		d->v[i] = h2;
-	}
+    d->v[i] = h2;
+  }
 
-	// Accumulate transformations
-	for (i = 0; i < n - 1; i++)
-	{
-		V->v[n - 1]->v[i] = V->v[i]->v[i];
-		V->v[i]->v[i] = 1.0;
-		h = d->v[i + 1];
+  // Accumulate transformations
+  for (i = 0; i < n - 1; i++)
+  {
+    V->v[n - 1]->v[i] = V->v[i]->v[i];
+    V->v[i]->v[i] = 1.0;
+    h = d->v[i + 1];
 
-		if (h != 0.0)
-		{
-			for (k = 0; k < i + 1; k++)
-			{
-				d->v[k] = V->v[k]->v[i + 1] / h;
-			}
+    if (h != 0.0)
+    {
+      for (k = 0; k < i + 1; k++)
+      {
+        d->v[k] = V->v[k]->v[i + 1] / h;
+      }
 
-			for (j = 0; j < i + 1; j++)
-			{
-				g = 0.0;
+      for (j = 0; j < i + 1; j++)
+      {
+        g = 0.0;
 
-				for (k = 0; k < i + 1; k++)
-				{
-					g += V->v[k]->v[i + 1] * V->v[k]->v[j];
-				}
+        for (k = 0; k < i + 1; k++)
+        {
+          g += V->v[k]->v[i + 1] * V->v[k]->v[j];
+        }
 
-				for (k = 0; k < i + 1; k++)
-				{
-					V->v[k]->v[j] -= g * d->v[k];
-				}
-			}
-		}
+        for (k = 0; k < i + 1; k++)
+        {
+          V->v[k]->v[j] -= g * d->v[k];
+        }
+      }
+    }
 
-		for (k = 0; k < i + 1; k++)
-		{
-			V->v[k]->v[i + 1] = 0.0;
-		}
-	}
+    for (k = 0; k < i + 1; k++)
+    {
+      V->v[k]->v[i + 1] = 0.0;
+    }
+  }
 
-	for (j = 0; j < n; j++)
-	{
-		d->v[j] = V->v[n - 1]->v[j];
-		V->v[n - 1]->v[j] = 0.0;
-	}
+  for (j = 0; j < n; j++)
+  {
+    d->v[j] = V->v[n - 1]->v[j];
+    V->v[n - 1]->v[j] = 0.0;
+  }
 
-	V->v[n - 1]->v[n - 1] = 1.0;
-	e->v[0] = 0.0;
+  V->v[n - 1]->v[n - 1] = 1.0;
+  e->v[0] = 0.0;
 }
 /**
 * Symmetric tridiagonal QL algorithm.
 */
 private static void tql2(T->v[]->v[] V, T->v[] d, T->v[] e)
 {
-	var N = V.Length;
+  var N = V.Length;
 
-	//  This is derived from the Algol procedures tql2, by
-	//  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
-	//  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
-	//  Fortran subroutine in EISPACK.
-	int i, m, l, k;
-	T	g, p, r, dl1, h, f, tst1, eps;
-	T	c, c2, c3, el1, s, s2;
+  //  This is derived from the Algol procedures tql2, by
+  //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
+  //  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
+  //  Fortran subroutine in EISPACK.
+  int i, m, l, k;
+  T  g, p, r, dl1, h, f, tst1, eps;
+  T  c, c2, c3, el1, s, s2;
 
-	for (i = 1; i < N; i++)
-	{
-		e->v[i - 1] = e->v[i];
-	}
+  for (i = 1; i < N; i++)
+  {
+    e->v[i - 1] = e->v[i];
+  }
 
-	e->v[N - 1] = 0.0;
+  e->v[N - 1] = 0.0;
 
-	f = 0.0;
-	tst1 = 0.0;
-	eps = Math.Pow(2.0, -52.0);
+  f = 0.0;
+  tst1 = 0.0;
+  eps = Math.Pow(2.0, -52.0);
 
-	for (l = 0; l < N; l++)
-	{
-		// Find small subdiagonal element
-		tst1 = Math.Max(tst1, Math.Abs(d->v[l]) + Math.Abs(e->v[l]));
+  for (l = 0; l < N; l++)
+  {
+    // Find small subdiagonal element
+    tst1 = Math.Max(tst1, Math.Abs(d->v[l]) + Math.Abs(e->v[l]));
 
-		for (m = l; m < N; m++)
-		{
-			if (Math.Abs(e->v[m]) <= eps*tst1)
-			{
-				break;
-			}
-		}
+    for (m = l; m < N; m++)
+    {
+      if (Math.Abs(e->v[m]) <= eps*tst1)
+      {
+        break;
+      }
+    }
 
-		// If m == l, d->v[l] is an eigenvalue,
-		// otherwise, iterate.
-		if (m > l)
-		{
-			int iter = 0;
+    // If m == l, d->v[l] is an eigenvalue,
+    // otherwise, iterate.
+    if (m > l)
+    {
+      int iter = 0;
 
-			do
-			{
-				iter = iter + 1;  // (Could check iteration count here.)
+      do
+      {
+        iter = iter + 1;  // (Could check iteration count here.)
 
-				// Compute implicit shift
-				g = d->v[l];
-				p = (d->v[l + 1] - g) / (2.0 * e->v[l]);
-				//r = hypot2(p,1.0);
-				r = length(make(2, p, 1.0));
+        // Compute implicit shift
+        g = d->v[l];
+        p = (d->v[l + 1] - g) / (2.0 * e->v[l]);
+        //r = hypot2(p,1.0);
+        r = length(make(2, p, 1.0));
 
-				r = (p < 0) ? (-r) : (r);
+        r = (p < 0) ? (-r) : (r);
 
-				d->v[l] = e->v[l] / (p + r);
-				d->v[l + 1] = e->v[l] * (p + r);
-				dl1 = d->v[l + 1];
-				h = g - d->v[l];
+        d->v[l] = e->v[l] / (p + r);
+        d->v[l + 1] = e->v[l] * (p + r);
+        dl1 = d->v[l + 1];
+        h = g - d->v[l];
 
-				for (i = l + 2; i < N; i++)		{ d->v[i] -= h; }
+        for (i = l + 2; i < N; i++)    { d->v[i] -= h; }
 
-				f = f + h;
+        f = f + h;
 
-				// Implicit QL transformation.
-				p = d->v[m];
-				c = 1.0;
-				c2 = c;
-				c3 = c;
-				el1 = e->v[l + 1];
-				s = 0.0;
-				s2 = 0.0;
+        // Implicit QL transformation.
+        p = d->v[m];
+        c = 1.0;
+        c2 = c;
+        c3 = c;
+        el1 = e->v[l + 1];
+        s = 0.0;
+        s2 = 0.0;
 
-				for (i = m - 1; i >= l; i--)
-				{
-					c3 = c2;
-					c2 = c;
-					s2 = s;
-					g = c * e->v[i];
-					h = c * p;
-					//r = hypot2(p,e->v[i]);
-					r = length(make(2, p, e->v[i]));
-					e->v[i + 1] = s * r;
-					s = e->v[i] / r;
-					c = p / r;
-					p = c * d->v[i] - s * g;
-					d->v[i + 1] = h + s * (c * g + s * d->v[i]);
+        for (i = m - 1; i >= l; i--)
+        {
+          c3 = c2;
+          c2 = c;
+          s2 = s;
+          g = c * e->v[i];
+          h = c * p;
+          //r = hypot2(p,e->v[i]);
+          r = length(make(2, p, e->v[i]));
+          e->v[i + 1] = s * r;
+          s = e->v[i] / r;
+          c = p / r;
+          p = c * d->v[i] - s * g;
+          d->v[i + 1] = h + s * (c * g + s * d->v[i]);
 
-					// Accumulate transformation
-					for (k = 0; k < N; k++)
-					{
-						h = V->v[k]->v[i + 1];
-						V->v[k]->v[i + 1] = s * V->v[k]->v[i] + c * h;
-						V->v[k]->v[i] = c * V->v[k]->v[i] - s * h;
-					}
-				}
+          // Accumulate transformation
+          for (k = 0; k < N; k++)
+          {
+            h = V->v[k]->v[i + 1];
+            V->v[k]->v[i + 1] = s * V->v[k]->v[i] + c * h;
+            V->v[k]->v[i] = c * V->v[k]->v[i] - s * h;
+          }
+        }
 
-				p = -s * s2 * c3 * el1 * e->v[l] / dl1;
-				e->v[l] = s * p;
-				d->v[l] = c * p;
+        p = -s * s2 * c3 * el1 * e->v[l] / dl1;
+        e->v[l] = s * p;
+        d->v[l] = c * p;
 
-				// Check for convergence
-			} while (Math.Abs(e->v[l]) > eps*tst1);
-		}
+        // Check for convergence
+      } while (Math.Abs(e->v[l]) > eps*tst1);
+    }
 
-		d->v[l] = d->v[l] + f;
-		e->v[l] = 0.0;
-	}
+    d->v[l] = d->v[l] + f;
+    e->v[l] = 0.0;
+  }
 }
 /**
 * Sort eigenvalues and corresponding vectors.
 */
 private static void sortBy(ref T->v[]->v[] V, ref T->v[] d)
 {
-	check_size_match(V, d);
+  check_size_match(V, d);
 
-	var n = V.Length;
-	int i, j, k;
-	T p;
+  var n = V.Length;
+  int i, j, k;
+  T p;
 
-	for (i = 0; i < n - 1; i++)
-	{
-		k = i;
-		p = d->v[i];
+  for (i = 0; i < n - 1; i++)
+  {
+    k = i;
+    p = d->v[i];
 
-		for (j = i + 1; j < n; j++)
-		{
-			if (d->v[j] < p)
-			{
-				k = j;
-				p = d->v[j];
-			}
-		}
+    for (j = i + 1; j < n; j++)
+    {
+      if (d->v[j] < p)
+      {
+        k = j;
+        p = d->v[j];
+      }
+    }
 
-		if (k != i)
-		{
-			d->v[k] = d->v[i];
-			d->v[i] = p;
+    if (k != i)
+    {
+      d->v[k] = d->v[i];
+      d->v[i] = p;
 
-			// not sure why the sorting is based on these indices
-			// but we cannot change it here, it is within the 
-			// algorithm. Post-transpose?
-			for (j = 0; j < n; j++)
-			{
-				p = V->v[j]->v[i];
-				V->v[j]->v[i] = V->v[j]->v[k];
-				V->v[j]->v[k] = p;
-			}
-		}
-	}
+      // not sure why the sorting is based on these indices
+      // but we cannot change it here, it is within the 
+      // algorithm. Post-transpose?
+      for (j = 0; j < n; j++)
+      {
+        p = V->v[j]->v[i];
+        V->v[j]->v[i] = V->v[j]->v[k];
+        V->v[j]->v[k] = p;
+      }
+    }
+  }
 }
 /// <summary>
 /// Compute the eigenvectors and values of a given matrix A.
@@ -1123,25 +1123,25 @@ private static void sortBy(ref T->v[]->v[] V, ref T->v[] d)
 /// <param name="d">output vector of eigenvalues</param>
 public static void eig(T->v[]->v[] A, ref T->v[]->v[] V, ref T->v[] d)
 {
-	int n = sizeof_mat(A);
+  int n = sizeof_mat(A);
 
-	int i, j;
-	var e = new double->v[n];
+  int i, j;
+  var e = new double->v[n];
 
-	for (i = 0; i < n; i++)
-	{
-		for (j = 0; j < n; j++)
-		{
-			V->v[i]->v[j] = A->v[i]->v[j];
-		}
-	}
+  for (i = 0; i < n; i++)
+  {
+    for (j = 0; j < n; j++)
+    {
+      V->v[i]->v[j] = A->v[i]->v[j];
+    }
+  }
 
-	tred2(V, d, e);
-	tql2(V, d, e);
+  tred2(V, d, e);
+  tql2(V, d, e);
 
-	sortBy(ref V, ref d);
+  sortBy(ref V, ref d);
 
-	//V = transpose(V);
+  //V = transpose(V);
 }
 #endif
 
