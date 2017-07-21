@@ -1,5 +1,5 @@
 #include "../../include/lalg/mats.h"
-#include "../tests.h"
+#include "maketest.h"
 
 void multiple_linear_regression_test()
 {

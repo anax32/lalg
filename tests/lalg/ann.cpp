@@ -1,5 +1,5 @@
 #include "../../include/lalg/mats.h"
-#include "../tests.h"
+#include "maketest.h"
 
 void neural_network_2_layer_test()
 {

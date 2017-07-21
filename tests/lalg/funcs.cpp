@@ -1,5 +1,5 @@
 #include "../../include/lalg/mats.h"
-#include "../tests.h"
+#include "maketest.h"
 
 void zero_is_zero_test ()
 {
