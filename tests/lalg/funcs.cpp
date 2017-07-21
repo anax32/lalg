@@ -15,9 +15,11 @@ void one_is_not_zero ()
 }
 void sigmoid_test ()
 {
-    assert_are_equal_t (sigmoid (0.0), 0.50000, 0.00001);
-    assert_are_equal_t (sigmoid (0.5), 0.37754, 0.00001);
-    assert_are_equal_t (sigmoid (1.0), 0.26894, 0.00001);
+    assert_are_equal_t (sigmoid (-1.0), 0.26894, 0.00001);
+    assert_are_equal_t (sigmoid (-0.5), 0.37754, 0.00001);
+    assert_are_equal_t (sigmoid ( 0.0), 0.50000, 0.00001);
+    assert_are_equal_t (sigmoid ( 0.5), 0.62245, 0.00001);
+    assert_are_equal_t (sigmoid ( 1.0), 0.73105, 0.00001);
 }
 
 void sigmoid_derivative_test ()
